@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitcoin (BTC) Research & Coin Detail — COINLAB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       COINLAB DESIGN SYSTEM & STYLES
+       ========================================================================== */
+    :root {
+      --bg-app: #F8FAFD;
+      --bg-card: #FFFFFF;
+      --bg-sidebar: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --border-subtle: #EEF2F6;
+      --border-card: #E5EAF2;
+      --border-strong: #CBD5E1;
+      --text-main: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+      --primary-blue: #2563EB;
+      --primary-blue-hover: #1D4ED8;
+      --primary-blue-light: #EFF6FF;
+      --trend-green: #10B981;
+      --trend-green-bg: #ECFDF5;
+      --trend-green-border: #A7F3D0;
+      --trend-red: #EF4444;
+      --trend-red-bg: #FEF2F2;
+      --trend-red-border: #FECACA;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --shadow-card: 0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
+      --shadow-hover: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+      --shadow-dropdown: 0 12px 30px -4px rgba(15, 23, 42, 0.12);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-full: 9999px;
+      --sidebar-width: 240px;
+      --topnav-height: 64px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-app);
+      color: var(--text-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* VIEWPORT SIMULATOR / TOP TOOLBAR */
+    .viewport-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      border-bottom: 1px solid #1E293B;
+    }
+    .toolbar-left { display: flex; align-items: center; gap: 10px; }
+    .toolbar-logo { font-weight: 800; letter-spacing: 0.08em; color: #FFFFFF; }
+    .toolbar-tag { background: #1E293B; color: #94A3B8; padding: 2px 8px; border-radius: var(--radius-sm); font-size: 11px; }
+    .toolbar-screen { color: #38BDF8; font-weight: 500; }
+    .toolbar-center { display: flex; align-items: center; background: #1E293B; padding: 3px; border-radius: var(--radius-md); gap: 4px; }
+    .view-btn {
+      background: transparent; border: none; color: #94A3B8; padding: 5px 12px;
+      border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: all 0.15s ease;
+    }
+    .view-btn:hover { color: #FFFFFF; }
+    .view-btn.active { background: #2563EB; color: #FFFFFF; font-weight: 600; box-shadow: 0 1px 4px rgba(37, 99, 235, 0.4); }
+    .toolbar-right { display: flex; align-items: center; }
+    .data-indicator { display: flex; align-items: center; gap: 6px; color: #94A3B8; font-size: 12px; }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #10B981; animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* VIEWPORT MODES */
+    .app-viewport { min-height: calc(100vh - 46px); display: flex; justify-content: center; background: #E2E8F0; }
+    .app-viewport.mode-desktop { padding: 0; background: var(--bg-app); }
+    .app-viewport.mode-desktop .app-container { width: 100%; max-width: 100%; border-radius: 0; }
+    .app-viewport.mode-mobile { padding: 24px 0; }
+    .app-viewport.mode-mobile .app-container {
+      width: 390px; max-width: 390px; height: 844px; overflow-y: auto;
+      border-radius: 40px; border: 10px solid #1E293B; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3);
+    }
+    .app-viewport.mode-fluid { padding: 0; background: var(--bg-app); }
+    .app-viewport.mode-fluid .app-container { width: 100%; }
+
+    .app-container { display: flex; background: var(--bg-app); width: 100%; position: relative; overflow-x: hidden; }
+
+    /* SIDEBAR */
+    .app-sidebar {
+      width: var(--sidebar-width); min-width: var(--sidebar-width); background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle); min-height: 100vh; display: flex; flex-direction: column;
+      flex-shrink: 0; transition: transform 0.25s ease; z-index: 50;
+    }
+    .sidebar-header { height: var(--topnav-height); padding: 0 20px; display: flex; align-items: center; gap: 12px; }
+    .brand-avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: #0F172A; color: #FFFFFF;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-name { font-size: 17px; font-weight: 800; letter-spacing: 0.06em; color: var(--text-main); }
+    .mobile-close-btn { display: none; margin-left: auto; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; }
+    .sidebar-nav { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 24px; }
+    .nav-section { display: flex; flex-direction: column; gap: 6px; }
+    .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-light); padding: 0 10px 4px 10px; }
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--radius-md);
+      color: var(--text-muted); text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.15s ease;
+    }
+    .nav-item:hover { background: var(--bg-subtle); color: var(--text-main); }
+    .nav-item.active { background: #FFFFFF; color: var(--text-main); font-weight: 600; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04); border: 1px solid var(--border-subtle); }
+    .nav-item.active-sub { background: var(--primary-blue-light); color: var(--primary-blue); font-weight: 600; }
+    .nav-icon { display: flex; align-items: center; justify-content: center; }
+    .nav-label { flex: 1; }
+    .nav-badge { font-size: 10px; font-weight: 700; background: #DCFCE7; color: #15803D; padding: 1px 6px; border-radius: var(--radius-full); }
+    .nav-count { font-size: 11px; font-weight: 600; background: var(--bg-subtle); color: var(--text-muted); padding: 1px 7px; border-radius: var(--radius-full); }
+    .sidebar-footer { padding: 16px; border-top: 1px solid var(--border-subtle); }
+    .system-status-card { background: var(--bg-subtle); padding: 10px 12px; border-radius: var(--radius-md); }
+    .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--text-main); }
+    .status-dot.green { width: 7px; height: 7px; border-radius: 50%; background: var(--trend-green); }
+    .status-sub { display: block; font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+
+    /* MAIN CONTENT */
+    .main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--bg-app); }
+    .top-nav {
+      height: var(--topnav-height); padding: 0 28px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle); background: var(--bg-app); position: sticky; top: 0; z-index: 40;
+    }
+    .nav-left { display: flex; align-items: center; gap: 16px; }
+    .mobile-hamburger-btn { display: none; background: none; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 6px; color: var(--text-main); cursor: pointer; }
+    .breadcrumbs { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+    .breadcrumb-icon { color: var(--text-light); display: flex; align-items: center; }
+    .breadcrumb-link { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+    .breadcrumb-separator { color: var(--text-light); font-size: 12px; }
+    .breadcrumb-current { color: var(--text-main); font-weight: 600; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .search-container { position: relative; width: 260px; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
+    .search-input {
+      width: 100%; height: 36px; padding: 0 36px 0 34px; background: #FFFFFF; border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full); font-size: 13px; font-family: inherit; color: var(--text-main); outline: none;
+    }
+    .search-input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+    .search-kbd {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; font-weight: 600;
+      color: var(--text-light); background: var(--bg-subtle); border: 1px solid var(--border-subtle); padding: 1px 6px; border-radius: var(--radius-sm);
+    }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-action-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-subtle); background: #FFFFFF;
+      color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+    }
+    .icon-action-btn:hover { background: var(--bg-subtle); color: var(--text-main); }
+    .notification-badge { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; background: var(--trend-red); border-radius: 50%; border: 1.5px solid #FFFFFF; }
+    .user-profile-menu {
+      display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; background: #FFFFFF;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-full); cursor: pointer;
+    }
+    .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: #0F172A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+    .user-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
+
+    /* PAGE CONTENT */
+    .page-content { padding: 24px 28px 40px 28px; display: flex; flex-direction: column; gap: 20px; max-width: 1440px; margin: 0 auto; width: 100%; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); padding: 22px; transition: box-shadow 0.2s ease; }
+    .card:hover { box-shadow: var(--shadow-hover); }
+    .card-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .title-with-accent { display: flex; align-items: center; gap: 8px; }
+    .accent-bar { width: 4px; height: 16px; border-radius: 2px; background: var(--primary-blue); }
+    .accent-bar.blue { background: var(--primary-blue); }
+    .accent-bar.green { background: var(--trend-green); }
+    .accent-bar.purple { background: #8B5CF6; }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
+    .subtle-btn, .info-tooltip-btn { background: none; border: none; color: var(--text-light); cursor: pointer; padding: 4px; border-radius: var(--radius-sm); }
+    .subtle-btn:hover, .info-tooltip-btn:hover { color: var(--text-main); background: var(--bg-subtle); }
+
+    /* COIN HEADER */
+    .coin-header-card { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 4px 6px 4px; }
+    .coin-identity { display: flex; align-items: center; gap: 16px; }
+    .bitcoin-logo-wrapper { width: 52px; height: 52px; flex-shrink: 0; filter: drop-shadow(0 4px 10px rgba(247, 147, 26, 0.28)); }
+    .coin-title-group { display: flex; flex-direction: column; gap: 4px; }
+    .title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .coin-name { font-size: 26px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; line-height: 1.1; }
+    .coin-symbol-badge { font-size: 12px; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 2px 7px; border-radius: var(--radius-sm); }
+    .rank-pill { display: flex; align-items: center; background: var(--bg-subtle); border-radius: var(--radius-full); padding: 2px 8px 2px 4px; gap: 6px; font-size: 11.5px; }
+    .rank-number { background: var(--text-main); color: #FFFFFF; font-weight: 700; padding: 1px 6px; border-radius: var(--radius-full); font-size: 11px; }
+    .rank-label { color: var(--text-muted); font-weight: 500; }
+    .price-row { display: flex; align-items: baseline; gap: 12px; }
+    .current-price { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; }
+    .price-change-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-full); }
+    .price-change-pill.positive { color: var(--trend-green); background: var(--trend-green-bg); border: 1px solid var(--trend-green-border); }
+    .change-timeframe { font-weight: 500; color: var(--trend-green); opacity: 0.9; font-size: 12px; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 38px;
+      padding: 0 16px; border-radius: var(--radius-full); font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s ease; font-family: inherit; border: 1px solid transparent;
+    }
+    .btn-secondary { background: #FFFFFF; color: var(--text-main); border-color: var(--border-subtle); box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+    .btn-secondary:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+    .btn-secondary.active { background: var(--primary-blue-light); color: var(--primary-blue); border-color: #BFDBFE; }
+
+    /* KEY METRICS ROW */
+    .key-metrics-card {
+      background: #FFFFFF; border: 1px solid var(--border-card); border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .metric-item { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 0 12px; }
+    .metric-item:first-child { padding-left: 0; }
+    .metric-item:last-child { padding-right: 0; }
+    .metric-divider { width: 1px; height: 48px; background: var(--border-subtle); flex-shrink: 0; }
+    .metric-label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+    .metric-value { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.01em; }
+    .metric-trend { display: inline-flex; align-items: center; gap: 3px; font-size: 11.5px; font-weight: 600; }
+    .metric-trend.positive { color: var(--trend-green); }
+    .metric-subtext { font-size: 11.5px; color: var(--text-light); }
+    .supply-progress-container { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+    .supply-progress-bar { flex: 1; height: 5px; background: var(--bg-subtle); border-radius: var(--radius-full); overflow: hidden; }
+    .supply-fill { height: 100%; background: var(--primary-blue); border-radius: var(--radius-full); }
+    .supply-percentage { font-size: 11px; font-weight: 700; color: var(--primary-blue); }
+
+    /* SUBNAV TABS */
+    .subnav-tabs-wrapper { border-bottom: 1px solid var(--border-subtle); padding: 0 4px; }
+    .subnav-tabs { display: flex; align-items: center; gap: 28px; list-style: none; overflow-x: auto; scrollbar-width: none; }
+    .subnav-tabs::-webkit-scrollbar { display: none; }
+    .tab-item a { display: block; padding: 8px 0 14px 0; font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; position: relative; white-space: nowrap; }
+    .tab-item a:hover { color: var(--text-main); }
+    .tab-item.active a { color: var(--primary-blue); font-weight: 700; }
+    .tab-item.active a::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2.5px; background: var(--primary-blue); border-radius: 2px 2px 0 0; }
+
+    /* MAIN CHART & MARKET INFO GRID */
+    .chart-market-grid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 20px; }
+    .main-chart-card { padding: 20px 22px 18px 22px; display: flex; flex-direction: column; }
+    .chart-header-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+    .chart-title-area { display: flex; align-items: center; gap: 10px; }
+    .chart-card-title { font-size: 16px; font-weight: 700; color: var(--text-main); }
+    .pair-pill { display: flex; align-items: center; gap: 6px; background: var(--bg-subtle); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 11.5px; }
+    .pair-text { font-weight: 600; color: var(--text-main); }
+    .exchange-badge { background: #E2E8F0; color: #475569; font-size: 10px; font-weight: 700; padding: 1px 4px; border-radius: 3px; }
+    .chart-controls-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .timeframe-selector { display: flex; align-items: center; background: var(--bg-subtle); padding: 3px; border-radius: var(--radius-md); gap: 2px; }
+    .tf-btn { background: transparent; border: none; font-size: 11.5px; font-weight: 600; color: var(--text-muted); padding: 4px 8px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s ease; }
+    .tf-btn:hover { color: var(--text-main); }
+    .tf-btn.active { background: #FFFFFF; color: var(--primary-blue); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .chart-type-toggle { display: flex; align-items: center; background: var(--bg-subtle); padding: 3px; border-radius: var(--radius-md); gap: 2px; }
+    .type-btn { background: transparent; border: none; padding: 5px 7px; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .type-btn:hover { color: var(--text-main); }
+    .type-btn.active { background: #FFFFFF; color: var(--primary-blue); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .dropdown-container { position: relative; }
+    .dropdown-trigger-btn { display: flex; align-items: center; gap: 6px; background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 5px 10px; font-size: 12px; font-weight: 600; color: var(--text-body); cursor: pointer; }
+    .dropdown-menu { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-dropdown); padding: 8px; width: 190px; z-index: 100; }
+    .dropdown-menu.show { display: flex; flex-direction: column; gap: 4px; }
+    .dropdown-header { font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: var(--text-light); padding: 4px 8px; }
+    .dropdown-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 12px; color: var(--text-body); border-radius: var(--radius-sm); cursor: pointer; }
+    .indicator-color-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .indicator-color-dot.ma20 { background: #F59E0B; }
+    .indicator-color-dot.ma50 { background: #8B5CF6; }
+    .indicator-color-dot.bb { background: #06B6D4; }
+    .indicator-color-dot.vol { background: #64748B; }
+    .dropdown-divider { height: 1px; background: var(--border-subtle); margin: 4px 0; }
+    .fullscreen-btn { background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 6px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    .chart-stats-strip { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #F8FAFD; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+    .stats-left { display: flex; align-items: center; gap: 10px; }
+    .stat-live-price { font-size: 18px; font-weight: 800; color: var(--text-main); font-family: var(--font-mono); }
+    .stat-change-pill { font-size: 12px; font-weight: 700; }
+    .stat-change-pill.positive { color: var(--trend-green); }
+    .stats-right { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+    .stat-pill { display: flex; align-items: center; gap: 4px; }
+    .stat-pill .lbl { color: var(--text-light); font-weight: 500; }
+    .stat-pill .val { font-weight: 600; color: var(--text-body); font-family: var(--font-mono); }
+    .price-alert-btn { display: flex; align-items: center; gap: 5px; background: #FFFFFF; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 3px 8px; font-size: 11.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; }
+
+    .chart-canvas-wrapper { position: relative; width: 100%; height: 320px; cursor: crosshair; }
+    #priceChartCanvas { width: 100%; height: 100%; display: block; }
+    .chart-tooltip { position: absolute; display: none; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(6px); color: #FFFFFF; padding: 8px 12px; border-radius: var(--radius-md); font-size: 11px; pointer-events: none; z-index: 50; font-family: var(--font-mono); line-height: 1.5; }
+    .volume-canvas-wrapper { position: relative; width: 100%; height: 65px; margin-top: 4px; border-top: 1px dashed var(--border-subtle); padding-top: 4px; }
+    .volume-header-label { position: absolute; top: 4px; left: 6px; font-size: 10px; color: var(--text-light); display: flex; gap: 8px; z-index: 10; font-family: var(--font-mono); }
+    .vol-value { color: var(--text-muted); font-weight: 600; }
+    #volumeChartCanvas { width: 100%; height: 100%; display: block; }
+    .chart-scrubber-bar { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 6px; }
+    .scrubber-track { width: 100%; height: 12px; background: var(--bg-subtle); border-radius: 4px; position: relative; overflow: hidden; }
+    .scrubber-window { position: absolute; top: 0; bottom: 0; background: rgba(37, 99, 235, 0.12); border: 1px solid var(--primary-blue); border-radius: 3px; cursor: grab; }
+    .scrubber-handle { width: 5px; height: 100%; background: var(--primary-blue); position: absolute; top: 0; }
+    .scrubber-handle.left { left: 0; }
+    .scrubber-handle.right { right: 0; }
+    .scrubber-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-light); font-family: var(--font-mono); }
+
+    /* MARKET INFO CARD */
+    .market-info-card { display: flex; flex-direction: column; }
+    .market-data-list { display: flex; flex-direction: column; flex: 1; }
+    .data-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-subtle); }
+    .data-row:last-child { border-bottom: none; }
+    .data-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+    .data-value { font-size: 14px; font-weight: 700; color: var(--text-main); text-align: right; }
+    .rank-highlight { background: var(--text-main); color: #FFFFFF; padding: 1px 8px; border-radius: var(--radius-sm); font-size: 12px; }
+    .data-row.complex { align-items: flex-start; }
+    .label-group, .value-group { display: flex; flex-direction: column; }
+    .data-sublabel { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+    .data-subvalue { font-size: 11.5px; font-weight: 600; text-align: right; margin-top: 1px; }
+    .data-subvalue.negative { color: var(--trend-red); }
+    .data-subvalue.positive { color: var(--trend-green); }
+    .market-info-footer { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-subtle); }
+    .buy-btc-btn {
+      width: 100%; height: 40px; background: var(--primary-blue); color: #FFFFFF; border: none; border-radius: var(--radius-md);
+      font-size: 13.5px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+    .buy-btc-btn:hover { background: var(--primary-blue-hover); }
+
+    /* BOTTOM THREE CARDS */
+    .bottom-cards-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .token-supply-card, .holders-card, .price-performance-card { display: flex; flex-direction: column; }
+    .donut-chart-container { display: flex; align-items: center; justify-content: space-around; padding: 10px 0 16px 0; gap: 16px; }
+    .donut-svg-wrapper { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; }
+    .donut-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .donut-center-text { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .donut-percent { font-size: 22px; font-weight: 800; color: var(--text-main); line-height: 1; }
+    .donut-label { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+    .donut-legend { display: flex; flex-direction: column; gap: 12px; }
+    .legend-item { display: flex; align-items: flex-start; gap: 8px; }
+    .legend-indicator { width: 10px; height: 10px; border-radius: 3px; margin-top: 4px; }
+    .legend-indicator.circulating { background: var(--primary-blue); }
+    .legend-indicator.remaining { background: #CBD5E1; }
+    .legend-info { display: flex; flex-direction: column; }
+    .legend-name { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .legend-qty { font-size: 12.5px; font-weight: 700; color: var(--text-main); }
+    .breakdown-list { display: flex; flex-direction: column; border-top: 1px solid var(--border-subtle); padding-top: 8px; }
+    .breakdown-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; font-size: 12.5px; }
+    .breakdown-row.highlight { background: #F8FAFC; padding: 8px 8px; border-radius: var(--radius-sm); margin-top: 4px; }
+    .b-label { color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot.blue { background: var(--primary-blue); }
+    .dot.slate { background: #94A3B8; }
+    .b-val { font-weight: 600; color: var(--text-main); font-family: var(--font-mono); }
+
+    /* HOLDERS CARD */
+    .timeframe-tag { font-size: 11px; font-weight: 600; color: var(--text-light); background: var(--bg-subtle); padding: 2px 8px; border-radius: var(--radius-full); }
+    .holders-stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .stat-col { display: flex; flex-direction: column; }
+    .holders-sublabel { font-size: 12px; color: var(--text-muted); }
+    .holders-count { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.01em; }
+    .holders-growth-badge { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-full); }
+    .holders-growth-badge.positive { background: var(--trend-green-bg); color: var(--trend-green); border: 1px solid var(--trend-green-border); }
+    .holder-sparkline-wrapper { background: #F8FAFD; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 14px; }
+    .sparkline-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    .sparkline-sub { color: var(--trend-green); }
+    .sparkline-svg-container { width: 100%; height: 60px; }
+    .holder-growth-svg { width: 100%; height: 100%; overflow: visible; }
+    .holder-concentration { display: flex; flex-direction: column; gap: 9px; }
+    .concentration-header { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-light); }
+    .concentration-bar-item { display: flex; flex-direction: column; gap: 4px; }
+    .c-info { display: flex; justify-content: space-between; font-size: 12px; }
+    .c-name { color: var(--text-muted); }
+    .c-val { font-weight: 700; color: var(--text-main); font-family: var(--font-mono); }
+    .c-track { width: 100%; height: 5px; background: var(--bg-subtle); border-radius: var(--radius-full); overflow: hidden; }
+    .c-fill { height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-full); }
+
+    /* PRICE PERFORMANCE */
+    .perf-status-badge { font-size: 11px; font-weight: 700; color: #7C3AED; background: #F5F3FF; border: 1px solid #DDD6FE; padding: 2px 8px; border-radius: var(--radius-full); }
+    .perf-list { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .perf-row { display: grid; grid-template-columns: 70px 1fr 75px; align-items: center; gap: 12px; }
+    .perf-period { font-size: 12.5px; font-weight: 500; color: var(--text-muted); }
+    .perf-bar-track { width: 100%; height: 6px; background: var(--bg-subtle); border-radius: var(--radius-full); overflow: hidden; }
+    .perf-bar-fill { height: 100%; border-radius: var(--radius-full); transition: width 0.4s ease; }
+    .perf-bar-fill.positive { background: var(--trend-green); }
+    .perf-bar-fill.negative { background: var(--trend-red); }
+    .perf-bar-fill.highlight-fill { background: linear-gradient(90deg, #10B981, #047857); }
+    .perf-badge { font-size: 12px; font-weight: 700; text-align: right; font-family: var(--font-mono); }
+    .perf-badge.positive { color: var(--trend-green); }
+    .perf-badge.negative { color: var(--trend-red); }
+    .perf-badge.highlight-badge { color: #047857; background: #D1FAE5; padding: 1px 6px; border-radius: 4px; }
+    .perf-footer { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+    .perf-summary-pill { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: #4338CA; background: #EEF2FF; padding: 6px 10px; border-radius: var(--radius-md); }
+
+    /* TOAST & BACKDROP */
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #0F172A; color: #FFFFFF; padding: 10px 18px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2000; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .mobile-backdrop { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 45; }
+    .mobile-backdrop.show { display: block; }
+
+    /* RESPONSIVE QUERIES */
+    @media (max-width: 1024px) {
+      .chart-market-grid { grid-template-columns: 1fr; }
+      .bottom-cards-grid { grid-template-columns: 1fr 1fr; }
+      .price-performance-card { grid-column: span 2; }
+      .key-metrics-card { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 16px; }
+      .metric-divider { display: none; }
+      .metric-item { padding: 0; }
+    }
+    @media (max-width: 768px) {
+      :root { --sidebar-width: 280px; }
+      .app-sidebar { position: fixed; top: 0; bottom: 0; left: 0; transform: translateX(-100%); box-shadow: 0 0 30px rgba(0,0,0,0.15); }
+      .app-sidebar.mobile-open { transform: translateX(0); }
+      .mobile-close-btn, .mobile-hamburger-btn { display: block; }
+      .top-nav { padding: 0 16px; }
+      .search-container { display: none; }
+      .page-content { padding: 16px; gap: 16px; }
+      .coin-header-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .coin-identity { width: 100%; }
+      .header-actions { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .btn { padding: 0 8px; font-size: 11.5px; height: 34px; gap: 4px; }
+      .key-metrics-card { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 14px; }
+      .metric-value { font-size: 17px; }
+      .chart-market-grid { grid-template-columns: 1fr; }
+      .main-chart-card { padding: 14px; }
+      .chart-controls-group { width: 100%; justify-content: space-between; }
+      .chart-canvas-wrapper { height: 250px; }
+      .stats-right { display: none; }
+      .bottom-cards-grid { grid-template-columns: 1fr; }
+      .price-performance-card { grid-column: span 1; }
+    }
+
+    /* Simulation Mode Overrides */
+    .mode-mobile .app-sidebar { position: absolute; transform: translateX(-100%); }
+    .mode-mobile .app-sidebar.mobile-open { transform: translateX(0); }
+    .mode-mobile .mobile-close-btn, .mode-mobile .mobile-hamburger-btn { display: block; }
+    .mode-mobile .search-container { display: none; }
+    .mode-mobile .top-nav { padding: 0 14px; }
+    .mode-mobile .page-content { padding: 14px; gap: 14px; }
+    .mode-mobile .coin-header-card { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .mode-mobile .header-actions { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .mode-mobile .btn { padding: 0 4px; font-size: 11px; height: 32px; gap: 4px; }
+    .mode-mobile .key-metrics-card { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
+    .mode-mobile .metric-divider { display: none; }
+    .mode-mobile .metric-value { font-size: 16px; }
+    .mode-mobile .chart-market-grid { grid-template-columns: 1fr; }
+    .mode-mobile .bottom-cards-grid { grid-template-columns: 1fr; }
+    .mode-mobile .price-performance-card { grid-column: span 1; }
+    .mode-mobile .stats-right { display: none; }
+    .mode-mobile .chart-canvas-wrapper { height: 230px; }
+    .mode-mobile .donut-chart-container { flex-direction: column; gap: 10px; }
+  </style>
+</head>
+<body>
+
+  <!-- VIEWPORT TOOLBAR -->
+  <div class="viewport-toolbar">
+    <div class="toolbar-left">
+      <span class="toolbar-logo">COINLAB</span>
+      <span class="toolbar-tag">UI/UX Continuation</span>
+      <span class="toolbar-screen">Bitcoin Research & Coin Detail</span>
+    </div>
+    <div class="toolbar-center">
+      <button class="view-btn active" id="btn-view-desktop" onclick="setViewMode('desktop')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Desktop (1440px)
+      </button>
+      <button class="view-btn" id="btn-view-mobile" onclick="setViewMode('mobile')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        Mobile (390px)
+      </button>
+      <button class="view-btn" id="btn-view-fluid" onclick="setViewMode('fluid')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        Fluid
+      </button>
+    </div>
+    <div class="toolbar-right">
+      <span class="data-indicator"><span class="pulse-dot"></span> Realistic Mock Data</span>
+    </div>
+  </div>
+
+  <!-- APP VIEWPORT FRAME -->
+  <div id="app-frame" class="app-viewport mode-desktop">
+    <div id="mobile-backdrop" class="mobile-backdrop" onclick="toggleMobileSidebar()"></div>
+
+    <div class="app-container">
+      <!-- SIDEBAR -->
+      <aside id="app-sidebar" class="app-sidebar">
+        <div class="sidebar-header">
+          <div class="brand-avatar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
+          </div>
+          <span class="brand-name">COINLAB</span>
+          <button class="mobile-close-btn" onclick="toggleMobileSidebar()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <span class="section-title">Explore</span>
+            <ul class="nav-list">
+              <li>
+                <a href="#" class="nav-item">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span>
+                  <span class="nav-label">Overview</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-item active">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+                  <span class="nav-label">Markets</span>
+                  <span class="nav-badge">Live</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-item">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+                  <span class="nav-label">Trending</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="nav-section">
+            <span class="section-title">Research</span>
+            <ul class="nav-list">
+              <li>
+                <a href="#" class="nav-item active-sub">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>
+                  <span class="nav-label">Coins</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-item">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+                  <span class="nav-label">Watchlist</span>
+                  <span class="nav-count">8</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-item">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/></svg></span>
+                  <span class="nav-label">Compare</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="nav-section">
+            <span class="section-title">Tools</span>
+            <ul class="nav-list">
+              <li>
+                <a href="#" class="nav-item">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+                  <span class="nav-label">Alerts</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-item">
+                  <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+                  <span class="nav-label">Settings</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="system-status-card">
+            <div class="status-indicator">
+              <span class="status-dot green"></span>
+              <span class="status-text">Network Optimal</span>
+            </div>
+            <span class="status-sub">Gas: 18 Gwei • Block: #884,912</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <div class="main-wrapper">
+        <!-- TOP NAV -->
+        <header class="top-nav">
+          <div class="nav-left">
+            <button class="mobile-hamburger-btn" onclick="toggleMobileSidebar()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="breadcrumbs">
+              <span class="breadcrumb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+              <a href="#" class="breadcrumb-link">Markets</a>
+              <span class="breadcrumb-separator">/</span>
+              <span class="breadcrumb-current">Bitcoin</span>
+            </div>
+          </div>
+
+          <div class="nav-right">
+            <div class="search-container">
+              <span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+              <input type="text" class="search-input" placeholder="Search Coins">
+              <kbd class="search-kbd">/</kbd>
+            </div>
+
+            <div class="nav-actions">
+              <button class="icon-action-btn" title="History"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+              <button class="icon-action-btn relative" title="Notifications">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span class="notification-badge"></span>
+              </button>
+              <div class="user-profile-menu">
+                <div class="user-avatar">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                </div>
+                <span class="user-name">User</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- PAGE BODY -->
+        <main class="page-content">
+
+          <!-- COIN HEADER -->
+          <section class="coin-header-card">
+            <div class="coin-identity">
+              <div class="bitcoin-logo-wrapper">
+                <svg viewBox="0 0 64 64" fill="none" width="52" height="52">
+                  <circle cx="32" cy="32" r="32" fill="#F7931A"/>
+                  <path d="M46.1 27.4c.6-4.3-2.6-6.6-7.1-8.1l1.4-5.8-3.5-.9-1.4 5.6c-.9-.2-1.9-.4-2.8-.7l1.4-5.7-3.5-.9-1.4 5.8c-.8-.2-1.5-.4-2.3-.6l-4.9-1.2-1 3.8s2.6.6 2.6.7c1.4.4 1.7 1.3 1.7 2.1l-1.7 6.8c.1 0 .2.1.4.1-.1 0-.3-.1-.4-.1l-2.4 9.6c-.2.5-.7 1.2-1.7.9 0 0-2.6-.7-2.6-.7l-1.8 4.2 4.6 1.1c.9.2 1.7.5 2.5.7l-1.5 5.9 3.5.9 1.4-5.7c1 .3 1.9.5 2.8.7l-1.4 5.7 3.5.9 1.5-5.9c6 .1 10.5-.3 12.4-4.8 1.5-3.5 0-5.6-2.6-6.9 1.9-.4 3.3-1.7 3.7-4.2zm-6.6 9.3c-1.1 4.4-8.5 2-10.9 1.4l1.9-7.8c2.4.6 10.2 1.8 9 6.4zm1.1-9.4c-1 4-7.2 2-9.2 1.5l1.8-7.1c2 .5 8.4 1.5 7.4 5.6z" fill="#FFFFFF"/>
+                </svg>
+              </div>
+
+              <div class="coin-title-group">
+                <div class="title-row">
+                  <h1 class="coin-name">Bitcoin</h1>
+                  <span class="coin-symbol-badge">BTC</span>
+                  <div class="rank-pill">
+                    <span class="rank-number">#1</span>
+                    <span class="rank-label">Cryptocurrency</span>
+                  </div>
+                </div>
+
+                <div class="price-row">
+                  <div class="current-price" id="header-price">$67,420.52</div>
+                  <div class="price-change-pill positive">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
+                    <span>+2.43%</span>
+                    <span class="change-timeframe">(24hr)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="header-actions">
+              <button class="btn btn-secondary" id="btn-watchlist" onclick="toggleWatchlist()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="watchlist-icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <span id="watchlist-text">Add to Watchlist</span>
+              </button>
+              <button class="btn btn-secondary" onclick="showToast('Opening Compare Module...')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/></svg>
+                <span>Compare</span>
+              </button>
+              <button class="btn btn-secondary" onclick="shareCoin()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                <span>Share</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- KEY METRICS ROW -->
+          <section class="key-metrics-card">
+            <div class="metric-item">
+              <span class="metric-label">Market Cap</span>
+              <div class="metric-value">$1.34T</div>
+              <div class="metric-trend positive">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
+                <span>2.43% (24hr)</span>
+              </div>
+            </div>
+
+            <div class="metric-divider"></div>
+
+            <div class="metric-item">
+              <span class="metric-label">24h Volume</span>
+              <div class="metric-value">$42.8B</div>
+              <div class="metric-trend positive">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
+                <span>12.4%</span>
+              </div>
+            </div>
+
+            <div class="metric-divider"></div>
+
+            <div class="metric-item">
+              <span class="metric-label">Holders</span>
+              <div class="metric-value">54.2M</div>
+              <div class="metric-trend positive">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
+                <span>1.8%</span>
+              </div>
+            </div>
+
+            <div class="metric-divider"></div>
+
+            <div class="metric-item supply-item">
+              <span class="metric-label">Circulating Supply</span>
+              <div class="metric-value">19.8M BTC</div>
+              <div class="supply-progress-container">
+                <div class="supply-progress-bar">
+                  <div class="supply-fill" style="width: 94.3%;"></div>
+                </div>
+                <span class="supply-percentage">94.3%</span>
+              </div>
+            </div>
+
+            <div class="metric-divider"></div>
+
+            <div class="metric-item">
+              <span class="metric-label">Total Supply</span>
+              <div class="metric-value">19.8M BTC</div>
+              <div class="metric-subtext">Verified on-chain</div>
+            </div>
+
+            <div class="metric-divider"></div>
+
+            <div class="metric-item">
+              <span class="metric-label">Max Supply</span>
+              <div class="metric-value">21M BTC</div>
+              <div class="metric-subtext">Hard capped limit</div>
+            </div>
+          </section>
+
+          <!-- TABS -->
+          <div class="subnav-tabs-wrapper">
+            <ul class="subnav-tabs">
+              <li class="tab-item active"><a href="#overview">Overview</a></li>
+              <li class="tab-item"><a href="#markets">Markets</a></li>
+              <li class="tab-item"><a href="#news">News</a></li>
+              <li class="tab-item"><a href="#holders">Holders</a></li>
+              <li class="tab-item"><a href="#historical">Historical Data</a></li>
+              <li class="tab-item"><a href="#tokenomics">Tokenomics</a></li>
+            </ul>
+          </div>
+
+          <!-- MAIN GRID: CHART & MARKET INFO -->
+          <div class="chart-market-grid">
+            <!-- MAIN PRICE CHART -->
+            <section class="card main-chart-card">
+              <div class="chart-header-bar">
+                <div class="chart-title-area">
+                  <h2 class="chart-card-title">Bitcoin Price Chart</h2>
+                  <div class="pair-pill">
+                    <span class="pair-text">BTC / USD</span>
+                    <span class="exchange-badge">Spot</span>
+                  </div>
+                </div>
+
+                <div class="chart-controls-group">
+                  <div class="timeframe-selector">
+                    <button class="tf-btn" data-tf="1H" onclick="setTimeframe('1H')">1H</button>
+                    <button class="tf-btn" data-tf="4H" onclick="setTimeframe('4H')">4H</button>
+                    <button class="tf-btn active" data-tf="1D" onclick="setTimeframe('1D')">1D</button>
+                    <button class="tf-btn" data-tf="1W" onclick="setTimeframe('1W')">1W</button>
+                    <button class="tf-btn" data-tf="1M" onclick="setTimeframe('1M')">1M</button>
+                    <button class="tf-btn" data-tf="1Y" onclick="setTimeframe('1Y')">1Y</button>
+                    <button class="tf-btn" data-tf="ALL" onclick="setTimeframe('ALL')">ALL</button>
+                  </div>
+
+                  <div class="chart-type-toggle">
+                    <button class="type-btn" id="btn-type-candle" onclick="setChartType('candle')" title="Candlestick Chart">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="2" x2="9" y2="22"/><rect x="6" y="6" width="6" height="11" rx="1" fill="currentColor"/><line x1="17" y1="4" x2="17" y2="20"/><rect x="14" y="9" width="6" height="7" rx="1" fill="currentColor"/></svg>
+                    </button>
+                    <button class="type-btn active" id="btn-type-line" onclick="setChartType('line')" title="Line Area Chart">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </button>
+                  </div>
+
+                  <div class="dropdown-container" id="indicator-dropdown-container">
+                    <button class="dropdown-trigger-btn" onclick="toggleDropdown('indicator-dropdown')">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+                      <span>Indicators</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="dropdown-menu" id="indicator-dropdown">
+                      <div class="dropdown-header">Technical Overlays</div>
+                      <label class="dropdown-item">
+                        <input type="checkbox" id="check-ma20" checked onchange="toggleIndicator('ma20')">
+                        <span class="indicator-color-dot ma20"></span>
+                        <span>MA (20) • Fast</span>
+                      </label>
+                      <label class="dropdown-item">
+                        <input type="checkbox" id="check-ma50" checked onchange="toggleIndicator('ma50')">
+                        <span class="indicator-color-dot ma50"></span>
+                        <span>MA (50) • Trend</span>
+                      </label>
+                      <div class="dropdown-divider"></div>
+                      <div class="dropdown-header">Sub-Chart</div>
+                      <label class="dropdown-item">
+                        <input type="checkbox" id="check-vol" checked onchange="toggleIndicator('volume')">
+                        <span class="indicator-color-dot vol"></span>
+                        <span>Trading Volume</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <button class="fullscreen-btn" onclick="toggleFullscreenChart()" title="Fullscreen">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Price Bar & Quick Stats Strip -->
+              <div class="chart-stats-strip">
+                <div class="stats-left">
+                  <span class="stat-live-price" id="chart-live-price">$67,420.52</span>
+                  <span class="stat-change-pill positive">▲ +$1,598.20 (+2.43%)</span>
+                </div>
+                <div class="stats-right">
+                  <div class="stat-pill"><span class="lbl">H:</span> <span class="val" id="stat-high">$68,140.00</span></div>
+                  <div class="stat-pill"><span class="lbl">L:</span> <span class="val" id="stat-low">$65,820.10</span></div>
+                  <div class="stat-pill"><span class="lbl">24h Vol:</span> <span class="val">634,810 BTC</span></div>
+                  <button class="price-alert-btn" onclick="showToast('Price Alert set at $68,000')">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    Price Alert
+                  </button>
+                </div>
+              </div>
+
+              <div class="chart-canvas-wrapper" id="chart-container">
+                <canvas id="priceChartCanvas"></canvas>
+                <div id="chart-tooltip" class="chart-tooltip"></div>
+              </div>
+
+              <div class="volume-canvas-wrapper" id="volume-container">
+                <div class="volume-header-label">
+                  <span class="vol-tag">Volume (24h)</span>
+                  <span class="vol-value" id="hover-volume">$42.8B</span>
+                </div>
+                <canvas id="volumeChartCanvas"></canvas>
+              </div>
+
+              <div class="chart-scrubber-bar">
+                <div class="scrubber-track">
+                  <div class="scrubber-window" style="left: 20%; width: 75%;">
+                    <div class="scrubber-handle left"></div>
+                    <div class="scrubber-handle right"></div>
+                  </div>
+                </div>
+                <div class="scrubber-labels">
+                  <span>00:00</span>
+                  <span>04:00</span>
+                  <span>08:00</span>
+                  <span>12:00</span>
+                  <span>16:00</span>
+                  <span>20:00</span>
+                  <span>Now (Live)</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- MARKET INFORMATION CARD -->
+            <section class="card market-info-card">
+              <div class="card-title-bar">
+                <div class="title-with-accent">
+                  <span class="accent-bar"></span>
+                  <h3 class="card-title">Market Information</h3>
+                </div>
+                <button class="subtle-btn" title="Sort / Options">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+                </button>
+              </div>
+
+              <div class="market-data-list">
+                <div class="data-row">
+                  <span class="data-label">Market Rank</span>
+                  <span class="data-value rank-highlight">#1</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Market Cap</span>
+                  <span class="data-value">$1.34T</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">24h Volume</span>
+                  <span class="data-value">$42.8B</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Volume / Market Cap</span>
+                  <span class="data-value" style="font-family: var(--font-mono);">3.19%</span>
+                </div>
+                <div class="data-row complex">
+                  <div class="label-group">
+                    <span class="data-label">All-Time High</span>
+                    <span class="data-sublabel">Mar 14, 2024</span>
+                  </div>
+                  <div class="value-group">
+                    <span class="data-value">$73,737.94</span>
+                    <span class="data-subvalue negative">-8.56%</span>
+                  </div>
+                </div>
+                <div class="data-row complex">
+                  <div class="label-group">
+                    <span class="data-label">All-Time Low</span>
+                    <span class="data-sublabel">Jul 06, 2013</span>
+                  </div>
+                  <div class="value-group">
+                    <span class="data-value">$67.81</span>
+                    <span class="data-subvalue positive">+99,320%</span>
+                  </div>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Fully Diluted Valuation</span>
+                  <span class="data-value">$1.41T</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Market Dominance</span>
+                  <span class="data-value" style="font-weight: 700;">54.2%</span>
+                </div>
+              </div>
+
+              <div class="market-info-footer">
+                <button class="buy-btc-btn" onclick="showToast('Redirecting to COINLAB Instant Swap...')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"/></svg>
+                  Trade BTC on DEX / CEX
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <!-- THREE BOTTOM CARDS -->
+          <div class="bottom-cards-grid">
+
+            <!-- CARD 1 — TOKEN SUPPLY -->
+            <section class="card token-supply-card">
+              <div class="card-title-bar">
+                <div class="title-with-accent">
+                  <span class="accent-bar blue"></span>
+                  <h3 class="card-title">Token Supply</h3>
+                </div>
+                <button class="info-tooltip-btn" title="On-chain UTXO Ledger Verification">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+              </div>
+
+              <div class="donut-chart-container">
+                <div class="donut-svg-wrapper">
+                  <svg width="150" height="150" viewBox="0 0 160 160" class="donut-svg">
+                    <circle cx="80" cy="80" r="62" fill="none" stroke="#E2E8F0" stroke-width="16"/>
+                    <circle cx="80" cy="80" r="62" fill="none" stroke="url(#donutGrad)" stroke-width="16"
+                            stroke-dasharray="367.35 389.56" stroke-dashoffset="0" stroke-linecap="round"/>
+                    <defs>
+                      <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#2563EB"/>
+                        <stop offset="100%" stop-color="#38BDF8"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div class="donut-center-text">
+                    <span class="donut-percent">94.3%</span>
+                    <span class="donut-label">Circulating</span>
+                  </div>
+                </div>
+
+                <div class="donut-legend">
+                  <div class="legend-item">
+                    <div class="legend-indicator circulating"></div>
+                    <div class="legend-info">
+                      <span class="legend-name">Circulating</span>
+                      <span class="legend-qty">19.8M BTC (94.3%)</span>
+                    </div>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-indicator remaining"></div>
+                    <div class="legend-info">
+                      <span class="legend-name">Remaining</span>
+                      <span class="legend-qty">1.2M BTC (5.7%)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="breakdown-list">
+                <div class="breakdown-row">
+                  <span class="b-label"><span class="dot blue"></span>Circulating Supply</span>
+                  <span class="b-val">19,800,000 BTC</span>
+                </div>
+                <div class="breakdown-row">
+                  <span class="b-label"><span class="dot slate"></span>Remaining Supply</span>
+                  <span class="b-val">1,200,000 BTC</span>
+                </div>
+                <div class="breakdown-row">
+                  <span class="b-label">Total Supply</span>
+                  <span class="b-val">19,800,000 BTC</span>
+                </div>
+                <div class="breakdown-row highlight">
+                  <span class="b-label">Max Supply</span>
+                  <span class="b-val" style="font-weight: 700;">21,000,000 BTC</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- CARD 2 — HOLDERS -->
+            <section class="card holders-card">
+              <div class="card-title-bar">
+                <div class="title-with-accent">
+                  <span class="accent-bar green"></span>
+                  <h3 class="card-title">Holders</h3>
+                </div>
+                <div class="timeframe-tag">7D Growth</div>
+              </div>
+
+              <div class="holders-stat-row">
+                <div class="stat-col">
+                  <span class="holders-sublabel">Total Holders</span>
+                  <div class="holders-count">54.2M</div>
+                </div>
+                <div class="holders-growth-badge positive">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
+                  <span>+1.12% (7d)</span>
+                </div>
+              </div>
+
+              <div class="holder-sparkline-wrapper">
+                <div class="sparkline-header">
+                  <span>30-Day Network Growth</span>
+                  <span class="sparkline-sub">51.8M → 54.2M Addresses</span>
+                </div>
+                <div class="sparkline-svg-container">
+                  <svg viewBox="0 0 320 80" class="holder-growth-svg" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="hGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#10B981" stop-opacity="0.35"/>
+                        <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M 0,65 Q 40,62 80,55 T 160,42 T 240,28 T 320,10 L 320,80 L 0,80 Z" fill="url(#hGrad)"/>
+                    <path d="M 0,65 Q 40,62 80,55 T 160,42 T 240,28 T 320,10" fill="none" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="320" cy="10" r="4.5" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="holder-concentration">
+                <div class="concentration-header">Holder Concentration</div>
+                <div class="concentration-bar-item">
+                  <div class="c-info"><span class="c-name">Top 10 Holders</span><span class="c-val">5.21%</span></div>
+                  <div class="c-track"><div class="c-fill" style="width: 5.21%;"></div></div>
+                </div>
+                <div class="concentration-bar-item">
+                  <div class="c-info"><span class="c-name">Top 100 Holders</span><span class="c-val">13.43%</span></div>
+                  <div class="c-track"><div class="c-fill" style="width: 13.43%;"></div></div>
+                </div>
+                <div class="concentration-bar-item">
+                  <div class="c-info"><span class="c-name">Top 1,000 Holders</span><span class="c-val">27.86%</span></div>
+                  <div class="c-track"><div class="c-fill" style="width: 27.86%;"></div></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- CARD 3 — PRICE PERFORMANCE -->
+            <section class="card price-performance-card">
+              <div class="card-title-bar">
+                <div class="title-with-accent">
+                  <span class="accent-bar purple"></span>
+                  <h3 class="card-title">Price Performance</h3>
+                </div>
+                <span class="perf-status-badge">Bullish Index</span>
+              </div>
+
+              <div class="perf-list">
+                <div class="perf-row">
+                  <span class="perf-period">1 Hour</span>
+                  <div class="perf-bar-track"><div class="perf-bar-fill positive" style="width: 15%;"></div></div>
+                  <span class="perf-badge positive">+0.21%</span>
+                </div>
+                <div class="perf-row">
+                  <span class="perf-period">24 Hours</span>
+                  <div class="perf-bar-track"><div class="perf-bar-fill positive" style="width: 32%;"></div></div>
+                  <span class="perf-badge positive">+2.43%</span>
+                </div>
+                <div class="perf-row">
+                  <span class="perf-period">7 Days</span>
+                  <div class="perf-bar-track"><div class="perf-bar-fill positive" style="width: 50%;"></div></div>
+                  <span class="perf-badge positive">+6.12%</span>
+                </div>
+                <div class="perf-row">
+                  <span class="perf-period">30 Days</span>
+                  <div class="perf-bar-track"><div class="perf-bar-fill negative" style="width: 22%;"></div></div>
+                  <span class="perf-badge negative">-1.21%</span>
+                </div>
+                <div class="perf-row">
+                  <span class="perf-period">90 Days</span>
+                  <div class="perf-bar-track"><div class="perf-bar-fill positive" style="width: 68%;"></div></div>
+                  <span class="perf-badge positive">+14.38%</span>
+                </div>
+                <div class="perf-row">
+                  <span class="perf-period">1 Year</span>
+                  <div class="perf-bar-track"><div class="perf-bar-fill positive highlight-fill" style="width: 96%;"></div></div>
+                  <span class="perf-badge positive highlight-badge">+102.56%</span>
+                </div>
+              </div>
+
+              <div class="perf-footer">
+                <div class="perf-summary-pill">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                  <span>Outperforming 88% of Top 100 Assets (1Y)</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Action feedback</div>
+
+  <script>
+    // =========================================================================
+    // INLINE JAVASCRIPT ENGINE
+    // =========================================================================
+    const BASE_PRICE = 67420.52;
+
+    function generatePriceData(timeframe) {
+      let count = 60, volatility = 180, startPrice = BASE_PRICE - 850, stepMin = 24;
+      if (timeframe === '1H') { count = 40; volatility = 45; startPrice = BASE_PRICE - 140; stepMin = 1.5; }
+      else if (timeframe === '4H') { count = 50; volatility = 80; startPrice = BASE_PRICE - 350; stepMin = 5; }
+      else if (timeframe === '1D') { count = 60; volatility = 180; startPrice = 65820.10; stepMin = 24; }
+      else if (timeframe === '1W') { count = 56; volatility = 420; startPrice = 63500; stepMin = 180; }
+      else if (timeframe === '1M') { count = 60; volatility = 950; startPrice = 61200; stepMin = 720; }
+      else if (timeframe === '1Y') { count = 65; volatility = 2200; startPrice = 33400; stepMin = 8000; }
+      else if (timeframe === 'ALL') { count = 70; volatility = 4500; startPrice = 67.81; stepMin = 50000; }
+
+      const data = [];
+      let current = startPrice;
+      const now = new Date();
+
+      for (let i = 0; i < count; i++) {
+        const progress = i / (count - 1);
+        const target = startPrice + (BASE_PRICE - startPrice) * progress;
+        const delta = (Math.random() - 0.48) * volatility + (target - current) * 0.15;
+        const open = current;
+        let close = open + delta;
+        if (i === count - 1) close = BASE_PRICE;
+        const high = Math.max(open, close) + Math.random() * (volatility * 0.4);
+        const low = Math.min(open, close) - Math.random() * (volatility * 0.4);
+        const volume = Math.floor(1200 + Math.random() * 8500 + Math.abs(delta) * 15);
+        const time = new Date(now.getTime() - (count - 1 - i) * stepMin * 60000);
+
+        data.push({ time, open: +open.toFixed(2), high: +high.toFixed(2), low: +low.toFixed(2), close: +close.toFixed(2), volume });
+        current = close;
+      }
+
+      // Compute Moving Averages
+      for (let i = 0; i < data.length; i++) {
+        let sum20 = 0, count20 = Math.min(20, i + 1);
+        for (let j = i - count20 + 1; j <= i; j++) sum20 += data[j].close;
+        data[i].ma20 = +(sum20 / count20).toFixed(2);
+
+        let sum50 = 0, count50 = Math.min(50, i + 1);
+        for (let j = i - count50 + 1; j <= i; j++) sum50 += data[j].close;
+        data[i].ma50 = +(sum50 / count50).toFixed(2);
+      }
+      return data;
+    }
+
+    const state = {
+      timeframe: '1D',
+      chartType: 'line',
+      indicators: { ma20: true, ma50: true, volume: true },
+      data: generatePriceData('1D'),
+      hoverIndex: -1,
+      isInWatchlist: false
+    };
+
+    const priceCanvas = document.getElementById('priceChartCanvas');
+    const priceCtx = priceCanvas.getContext('2d');
+    const volumeCanvas = document.getElementById('volumeChartCanvas');
+    const volumeCtx = volumeCanvas.getContext('2d');
+    const tooltip = document.getElementById('chart-tooltip');
+
+    function setupCanvasDPI(canvas, ctx) {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.resetTransform?.();
+      ctx.scale(dpr, dpr);
+      return { width: rect.width, height: rect.height };
+    }
+
+    function renderCharts() {
+      if (!priceCanvas || !volumeCanvas) return;
+      const priceDims = setupCanvasDPI(priceCanvas, priceCtx);
+      const volDims = setupCanvasDPI(volumeCanvas, volumeCtx);
+      renderPriceChart(priceDims.width, priceDims.height);
+      if (state.indicators.volume) {
+        document.getElementById('volume-container').style.display = 'block';
+        renderVolumeChart(volDims.width, volDims.height);
+      } else {
+        document.getElementById('volume-container').style.display = 'none';
+      }
+    }
+
+    function renderPriceChart(w, h) {
+      const ctx = priceCtx;
+      const data = state.data;
+      if (!data || data.length === 0) return;
+      ctx.clearRect(0, 0, w, h);
+
+      const padTop = 15, padBottom = 25, padRight = 75, padLeft = 10;
+      const chartW = w - padLeft - padRight, chartH = h - padTop - padBottom;
+
+      let minP = Infinity, maxP = -Infinity;
+      data.forEach(d => {
+        if (d.low < minP) minP = d.low;
+        if (d.high > maxP) maxP = d.high;
+      });
+      const pBuffer = (maxP - minP) * 0.08 || 10;
+      minP -= pBuffer; maxP += pBuffer;
+
+      const getY = (val) => padTop + chartH - ((val - minP) / (maxP - minP)) * chartH;
+      const getX = (idx) => padLeft + (idx / (data.length - 1)) * chartW;
+
+      // Grid Lines
+      ctx.strokeStyle = '#F1F5F9';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const yVal = minP + (i / 5) * (maxP - minP);
+        const yPos = getY(yVal);
+        ctx.beginPath();
+        ctx.moveTo(padLeft, yPos);
+        ctx.lineTo(w - padRight, yPos);
+        ctx.stroke();
+
+        ctx.fillStyle = '#94A3B8';
+        ctx.font = '11px JetBrains Mono, monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('$' + Math.round(yVal).toLocaleString(), w - padRight + 10, yPos + 3.5);
+      }
+
+      // MA 50
+      if (state.indicators.ma50) {
+        ctx.beginPath();
+        ctx.strokeStyle = '#8B5CF6';
+        ctx.lineWidth = 1.5;
+        data.forEach((d, i) => { const x = getX(i), y = getY(d.ma50); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+        ctx.stroke();
+      }
+
+      // MA 20
+      if (state.indicators.ma20) {
+        ctx.beginPath();
+        ctx.strokeStyle = '#F59E0B';
+        ctx.lineWidth = 1.5;
+        data.forEach((d, i) => { const x = getX(i), y = getY(d.ma20); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+        ctx.stroke();
+      }
+
+      if (state.chartType === 'line') {
+        const grad = ctx.createLinearGradient(0, padTop, 0, h - padBottom);
+        grad.addColorStop(0, 'rgba(37, 99, 235, 0.22)');
+        grad.addColorStop(0.7, 'rgba(56, 189, 248, 0.05)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+        ctx.beginPath();
+        data.forEach((d, i) => { const x = getX(i), y = getY(d.close); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+        ctx.lineTo(getX(data.length - 1), h - padBottom);
+        ctx.lineTo(getX(0), h - padBottom);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        ctx.beginPath();
+        data.forEach((d, i) => { const x = getX(i), y = getY(d.close); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+        ctx.strokeStyle = '#2563EB';
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+
+        // End pulse dot
+        const lastX = getX(data.length - 1), lastY = getY(BASE_PRICE);
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#2563EB';
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        const candleW = Math.max(3, (chartW / data.length) * 0.7);
+        data.forEach((d, i) => {
+          const x = getX(i), openY = getY(d.open), closeY = getY(d.close), highY = getY(d.high), lowY = getY(d.low);
+          const isUp = d.close >= d.open, color = isUp ? '#10B981' : '#EF4444';
+          ctx.beginPath();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.2;
+          ctx.moveTo(x, highY); ctx.lineTo(x, lowY);
+          ctx.stroke();
+
+          ctx.fillStyle = color;
+          ctx.fillRect(x - candleW / 2, Math.min(openY, closeY), candleW, Math.max(2, Math.abs(closeY - openY)));
+        });
+      }
+
+      // Horizontal Current Price Dashed Reference Line
+      const currentY = getY(BASE_PRICE);
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = '#2563EB';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padLeft, currentY);
+      ctx.lineTo(w - padRight, currentY);
+      ctx.stroke();
+      ctx.restore();
+
+      // Right axis tag badge
+      ctx.fillStyle = '#2563EB';
+      ctx.beginPath();
+      ctx.roundRect?.(w - padRight + 2, currentY - 10, 72, 20, 4) || ctx.fillRect(w - padRight + 2, currentY - 10, 72, 20);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 10.5px JetBrains Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('$67,420', w - padRight + 38, currentY + 3.5);
+
+      // Hover Crosshair
+      if (state.hoverIndex >= 0 && state.hoverIndex < data.length) {
+        const hItem = data[state.hoverIndex];
+        const hX = getX(state.hoverIndex), hY = getY(hItem.close);
+        ctx.save();
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = '#64748B';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(hX, padTop); ctx.lineTo(hX, h - padBottom); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(padLeft, hY); ctx.lineTo(w - padRight, hY); ctx.stroke();
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.arc(hX, hY, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#2563EB';
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    function renderVolumeChart(w, h) {
+      const ctx = volumeCtx;
+      const data = state.data;
+      if (!data || data.length === 0) return;
+      ctx.clearRect(0, 0, w, h);
+
+      const padLeft = 10, padRight = 75, chartW = w - padLeft - padRight;
+      let maxVol = 0;
+      data.forEach(d => { if (d.volume > maxVol) maxVol = d.volume; });
+      if (maxVol === 0) maxVol = 1;
+      const barW = Math.max(2, (chartW / data.length) * 0.65);
+
+      data.forEach((d, i) => {
+        const x = padLeft + (i / (data.length - 1)) * chartW;
+        const barH = (d.volume / maxVol) * (h - 15);
+        const y = h - barH;
+        const isUp = d.close >= d.open;
+        ctx.fillStyle = (i === state.hoverIndex) ? (isUp ? '#10B981' : '#EF4444') : (isUp ? 'rgba(16, 185, 129, 0.45)' : 'rgba(239, 68, 68, 0.45)');
+        ctx.fillRect(x - barW / 2, y, barW, barH);
+      });
+    }
+
+    // Chart Mousemove / Tooltip
+    priceCanvas?.parentElement.addEventListener('mousemove', (e) => {
+      const rect = priceCanvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left, mouseY = e.clientY - rect.top;
+      const padLeft = 10, padRight = 75, chartW = rect.width - padLeft - padRight;
+      const ratio = Math.max(0, Math.min(1, (mouseX - padLeft) / chartW));
+      const index = Math.round(ratio * (state.data.length - 1));
+
+      state.hoverIndex = index;
+      renderCharts();
+
+      if (index >= 0 && index < state.data.length) {
+        const item = state.data[index];
+        const timeStr = item.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const isUp = item.close >= item.open;
+
+        tooltip.innerHTML = `
+          <div style="font-weight:700; color:#94A3B8; margin-bottom:4px;">${timeStr} (UTC)</div>
+          <div>Price: <strong style="color:${isUp ? '#34D399' : '#F87171'}">$${item.close.toLocaleString()}</strong></div>
+          <div style="color:#CBD5E1; font-size:10px;">O: $${item.open.toLocaleString()} | H: $${item.high.toLocaleString()}</div>
+          <div style="color:#CBD5E1; font-size:10px;">L: $${item.low.toLocaleString()} | Vol: ${item.volume.toLocaleString()} BTC</div>
+        `;
+        tooltip.style.display = 'block';
+        let tooltipX = mouseX + 15, tooltipY = mouseY - 40;
+        if (tooltipX + 150 > rect.width) tooltipX = mouseX - 160;
+        if (tooltipY < 10) tooltipY = 10;
+        tooltip.style.left = tooltipX + 'px';
+        tooltip.style.top = tooltipY + 'px';
+        document.getElementById('hover-volume').textContent = '$' + (item.volume * 0.067).toFixed(1) + 'M';
+      }
+    });
+
+    priceCanvas?.parentElement.addEventListener('mouseleave', () => {
+      state.hoverIndex = -1;
+      tooltip.style.display = 'none';
+      document.getElementById('hover-volume').textContent = '$42.8B';
+      renderCharts();
+    });
+
+    // Control Handlers
+    function setTimeframe(tf) {
+      state.timeframe = tf;
+      state.data = generatePriceData(tf);
+      document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tf === tf));
+      let hi = -Infinity, lo = Infinity;
+      state.data.forEach(d => { if (d.high > hi) hi = d.high; if (d.low < lo) lo = d.low; });
+      document.getElementById('stat-high').textContent = '$' + hi.toLocaleString(undefined, { minimumFractionDigits: 2 });
+      document.getElementById('stat-low').textContent = '$' + lo.toLocaleString(undefined, { minimumFractionDigits: 2 });
+      showToast(`Timeframe switched to ${tf}`);
+      renderCharts();
+    }
+
+    function setChartType(type) {
+      state.chartType = type;
+      document.getElementById('btn-type-candle').classList.toggle('active', type === 'candle');
+      document.getElementById('btn-type-line').classList.toggle('active', type === 'line');
+      showToast(`Switched to ${type === 'candle' ? 'Candlestick' : 'Line'} Mode`);
+      renderCharts();
+    }
+
+    function toggleDropdown(id) {
+      document.getElementById(id)?.classList.toggle('show');
+    }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#indicator-dropdown-container')) {
+        document.getElementById('indicator-dropdown')?.classList.remove('show');
+      }
+    });
+
+    function toggleIndicator(key) {
+      const cb = document.getElementById(`check-${key}`);
+      if (cb) {
+        state.indicators[key] = cb.checked;
+        renderCharts();
+        showToast(`${key.toUpperCase()} ${cb.checked ? 'enabled' : 'disabled'}`);
+      }
+    }
+
+    function toggleFullscreenChart() {
+      const card = document.querySelector('.main-chart-card');
+      if (!document.fullscreenElement) card.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+
+    function toggleWatchlist() {
+      state.isInWatchlist = !state.isInWatchlist;
+      const btn = document.getElementById('btn-watchlist');
+      const text = document.getElementById('watchlist-text');
+      const icon = document.getElementById('watchlist-icon');
+      if (state.isInWatchlist) {
+        btn.classList.add('active');
+        text.textContent = 'Saved in Watchlist';
+        icon.innerHTML = '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor"/>';
+        showToast('Bitcoin added to Watchlist');
+      } else {
+        btn.classList.remove('active');
+        text.textContent = 'Add to Watchlist';
+        icon.innerHTML = '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>';
+        showToast('Bitcoin removed from Watchlist');
+      }
+    }
+
+    function shareCoin() {
+      navigator.clipboard?.writeText(window.location.href);
+      showToast('Research link copied to clipboard!');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    function toggleMobileSidebar() {
+      document.getElementById('app-sidebar').classList.toggle('mobile-open');
+      document.getElementById('mobile-backdrop').classList.toggle('show');
+    }
+
+    function setViewMode(mode) {
+      document.getElementById('app-frame').className = `app-viewport mode-${mode}`;
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`btn-view-${mode}`).classList.add('active');
+      setTimeout(() => renderCharts(), 320);
+    }
+
+    window.addEventListener('resize', renderCharts);
+    window.addEventListener('DOMContentLoaded', renderCharts);
+  </script>
+</body>
+</html>
